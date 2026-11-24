@@ -1,0 +1,63 @@
+
+# Decorator for formatting reports
+def format_report(func):
+    def wrapper(self):
+        print("\n========== REPORT ==========")
+        func(self)
+        print("============================")
+    return wrapper
+
+
+class Report:
+    report_count = 0
+
+    def __init__(self, title, data):
+        self.title = title
+        self.data = data
+        Report.report_count += 1
+
+    # Class method
+    @classmethod
+    def total_reports(cls):
+        return cls.report_count
+
+    # Magic method for string representation
+    def __str__(self):
+        return f"Report Title: {self.title}"
+
+    # Magic method for adding reports
+    def __add__(self, other):
+        return Report(
+            self.title + " + " + other.title,
+            self.data + other.data
+        )
+
+    # Decorator applied to display method
+    @format_report
+    def display(self):
+        print("Title:", self.title)
+        print("Data:")
+
+        for item in self.data:
+            print("-", item)
+
+
+# Creating report objects
+report1 = Report("Student Report", ["Name: Rahul", "Marks: 85"])
+report2 = Report("Attendance Report", ["Attendance: 90%"])
+
+# Displaying reports
+report1.display()
+report2.display()
+
+# Using magic method __str__
+print("\n", report1)
+
+# Combining two reports using __add__
+combined_report = report1 + report2
+
+print("\nCombined Report:")
+combined_report.display()
+
+# Using class method
+print("\nTotal Reports Created:", Report.total_reports())
