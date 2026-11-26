@@ -1,0 +1,44 @@
+
+import gc
+import time
+import tracemalloc
+
+# Start memory tracking
+tracemalloc.start()
+
+# Create objects
+class Demo:
+    def __init__(self, value):
+        self.value = value
+
+# Create objects
+objects = [Demo(i) for i in range(100000)]
+
+print("Objects created:", len(objects))
+
+# Check garbage collection status
+print("Garbage collection enabled:", gc.isenabled())
+
+# Delete objects
+del objects
+
+# Check memory before garbage collection
+current, peak = tracemalloc.get_traced_memory()
+print("Memory before GC:", current)
+
+# Perform manual garbage collection
+start = time.time()
+collected = gc.collect()
+end = time.time()
+
+print("Objects collected:", collected)
+print("Time taken:", end - start, "seconds")
+
+# Check memory after garbage collection
+current, peak = tracemalloc.get_traced_memory()
+print("Memory after GC:", current)
+
+# Stop memory tracking
+tracemalloc.stop()
+
+print("Garbage collection completed.")
